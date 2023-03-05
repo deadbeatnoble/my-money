@@ -1,5 +1,9 @@
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 
 class CurrentDate {
     //assigning them all private so that the instance object can't cant access them and alter data
@@ -11,22 +15,71 @@ class CurrentDate {
     private SimpleDateFormat String_year = new SimpleDateFormat("yyyy");
 
     //maybe this is what is giving it an acceptable and readable format?
-    private String currentDay = String_day.format(today);
-    private String currentMonth = String_month.format(today);
-    private String currentYear = String_year.format(today);
+    String currentDay = String_day.format(today);
+    String currentMonth = String_month.format(today);
+    String currentYear = String_year.format(today);
 
-    //converting the objects value we got (Which is a STRING) into an int
-    int day = Integer.parseInt(currentDay);
-    int month = Integer.parseInt(currentMonth);
-    int year = Integer.parseInt(currentYear);
+}
+class AllowanceDate {
+
+    int day;
+    int month;
+    int year;
+
+    void readLatestAllowanceDate() {
+        try {
+            Scanner ifile = new Scanner(new File(".\\file\\date.txt"));
+            int i = 0;
+            while(ifile.hasNextLine())
+            {
+                String line = ifile.nextLine();
+                if(i == 0) {
+                    day = Integer.parseInt(line);
+                } else if (i == 1) {
+                    month = Integer.parseInt(line);
+                } else if (i == 2) {
+                    year = Integer.parseInt(line);
+                }
+                i++;
+                //do stuff
+            }
+        } catch (Exception e) {
+            return;
+        }
+    }
+    void createFirstAllowanceDate() throws IOException {
+        CurrentDate today = new CurrentDate();
+
+        FileOutputStream ofile = null;
+        try {
+            ofile = new FileOutputStream(".\\file\\date.txt");
+
+            byte[] buffer = today.currentDay.getBytes();
+            ofile.write(buffer, 0, buffer.length);
+
+            buffer = "\n".getBytes();
+            ofile.write(buffer, 0, buffer.length);
+
+            buffer = today.currentMonth.getBytes();
+            ofile.write(buffer, 0, buffer.length);
+
+            buffer = "\n".getBytes();
+            ofile.write(buffer, 0, buffer.length);
+
+            buffer = today.currentYear.getBytes();
+            ofile.write(buffer, 0, buffer.length);
+
+            ofile.close();
+        } catch (Exception e) {
+            return;
+        } finally{
+            if(ofile != null)
+                ofile.close();
+        }
+    }
 }
 public class Main {
     public static void main(String[] argvs) {
-        CurrentDate today = new CurrentDate();
-
-        System.out.println("Date: " + today.day);
-        System.out.println("Month: " + today.month);
-        System.out.println("Year: " + today.year);
 
     }
 }
