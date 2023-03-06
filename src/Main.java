@@ -26,6 +26,7 @@ class AllowanceDate {
     int month;
     int year;
 
+
     void readLatestAllowanceDate() {
         try {
             Scanner ifile = new Scanner(new File(".\\file\\date.txt"));
@@ -76,6 +77,32 @@ class AllowanceDate {
             if(ofile != null)
                 ofile.close();
         }
+    }
+    void allowanceDateStatus() {
+        AllowanceDate latest = new AllowanceDate();
+        latest.readLatestAllowanceDate();
+        CurrentDate today = new CurrentDate();
+
+        int currentMonth = Integer.parseInt(today.currentMonth);
+        int currentDay = Integer.parseInt(today.currentDay);
+        int currentYear = Integer.parseInt(today.currentYear);
+
+        if(currentYear >= latest.year) {
+            if(currentMonth >= latest.month) {
+                if((currentDay >= 7) && (currentDay <= 11)) {
+                    System.out.println("Message: Allowance date has ARRIVED!");
+                } else if (currentDay > 11) {
+                    System.out.println("WARNING: Allowance date has PASSED!");
+                } else if (currentDay < 7) {
+                    System.out.println("Message: Allowance date is NEAR!");
+                }
+            } else {
+                System.out.println("Message: Allowance not available yet!");
+            }
+        } else {
+            System.out.println("Message: Allowance not available yet!");
+        }
+
     }
 }
 public class Main {
