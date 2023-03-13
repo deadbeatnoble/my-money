@@ -25,9 +25,10 @@ class AllowanceDate {
     int day;
     int month;
     int year;
+    int round;
 
 
-    void readLatestAllowanceDate() {
+    AllowanceDate() {
         try {
             Scanner ifile = new Scanner(new File(".\\file\\date.txt"));
             int i = 0;
@@ -79,8 +80,8 @@ class AllowanceDate {
         }
     }
     void allowanceDateStatus() {
+        //must call this method first to get a value from round.
         AllowanceDate latest = new AllowanceDate();
-        latest.readLatestAllowanceDate();
         CurrentDate today = new CurrentDate();
 
         int currentMonth = Integer.parseInt(today.currentMonth);
@@ -89,6 +90,8 @@ class AllowanceDate {
 
         if(currentYear >= latest.year) {
             if(currentMonth >= latest.month) {
+                //counts the number of times the allowance must be recived. (counts per month)
+                round = currentMonth - latest.month;
                 if((currentDay >= 7) && (currentDay <= 11)) {
                     System.out.println("Message: Allowance date has ARRIVED!");
                 } else if (currentDay > 11) {
