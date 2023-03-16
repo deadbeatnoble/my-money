@@ -1,6 +1,4 @@
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
@@ -127,7 +125,47 @@ class CurrentBalance {
     //the money flow history is created and updated here
     CurrentDate today = new CurrentDate();
     Scanner input = new Scanner(System.in);
-    int balance;
+    double balance;
+    double amount;
+    CurrentBalance() {
+        //if file doesn't exist it will create a file and either asks for default starter balance or just gives it 0
+        //if file does exist them it read from file and assign it to global variable balance
+        try {
+            File file= new File(".//file//balance.txt");
+            if(file.exists()) {
+                Scanner ifile = new Scanner(new File(".//file//balance.txt"));
+                String StrAmount = ifile.nextLine();
+                balance = Double.parseDouble(StrAmount);
+            } else {
+                FileOutputStream ofile = new FileOutputStream(".//file//balance.txt");
+                System.out.println("Account Empty!");
+                System.out.println("Would you like to add a starter amount to your new account(y/n)?");
+                String choice = input.nextLine();
+                if(choice.equals("y")) {
+                    System.out.println("Enter amount: ");
+                    amount = input.nextDouble();
+                } else if (choice.equals("n")) {
+                    amount = 0;
+                }
+                balance = amount;
+                String StrBalance = Double.toString(balance);
+                ofile.write(StrBalance.getBytes());
+
+                ofile.close();
+            }
+        } catch (Exception e) {
+            return;
+        }
+    }
+    private void updateBalance(double newBalance) {
+        try {
+            String StrNewBalance = Double.toString(newBalance);
+            FileOutputStream ofile = new FileOutputStream(".//file//balance.txt");
+            ofile.write(StrNewBalance.getBytes());
+        } catch (Exception e) {
+            return;
+        }
+    }
     void createDepositeHistory() {
         //here we create the deposite history by writing the date, amount and reasons related to money to a file called deposite.txt
         double depo_amount;
@@ -155,7 +193,7 @@ class CurrentBalance {
             ofile.write("\n".getBytes());
 
             balance += depo_amount;
-            System.out.println(balance);
+            updateBalance(balance);
 
             ofile.close();
         } catch (IOException e) {
@@ -189,7 +227,7 @@ class CurrentBalance {
             ofile.write("\n".getBytes());
 
             balance -= with_amount;
-            System.out.println(balance);
+            updateBalance(balance);
 
             ofile.close();
         } catch (IOException e) {
@@ -199,30 +237,29 @@ class CurrentBalance {
 }
 public class Main {
     public static void main(String[] argvs) {
-        /*CurrentBalance user = new CurrentBalance();
+        /*
         Scanner input = new Scanner(System.in);
-
+        AllowanceDate userad = new AllowanceDate();
+        userad.allowanceDateStatus();
+        CurrentBalance usercb = new CurrentBalance();
         int choice;
         do {
-            System.out.println("1. D");
-            System.out.println("2. W");
-            System.out.println("3. E");
+            System.out.println("1. Deposit");
+            System.out.println("2. Withdraw");
+            System.out.println("3. Exit");
+
             choice = input.nextInt();
 
             switch (choice) {
                 case 1:
-                    System.out.println("1 " + user.balance);
-                    user.createDepositeHistory();
-                    System.out.println("1 " + user.balance);
+                    usercb.createDepositeHistory();
                     break;
                 case 2:
-                    System.out.println("1 " + user.balance);
-                    user.createWithdrawalHistory();
-                    System.out.println("1 " + user.balance);
+                    usercb.createWithdrawalHistory();
                     break;
             }
-
         } while (choice != 3);*/
+
 
     }
 }
