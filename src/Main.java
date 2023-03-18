@@ -26,6 +26,7 @@ class AllowanceDate {
     int month;
     int year;
     int round;
+    Scanner input = new Scanner(System.in);
 
 
     AllowanceDate() {
@@ -59,33 +60,78 @@ class AllowanceDate {
         //currently only sets default date as allowance date... personal date setting will be added later
         CurrentDate today = new CurrentDate();
 
-        FileOutputStream ofile = null;
-        try {
-            //didn't use append here because only one date can be set as default so cant append next to the old one as it is useless afterwards
-            //adding multiple dates for multiple users in the future assuming the program will be used by more than 1 user
-            ofile = new FileOutputStream(".\\file\\date.txt");
+        System.out.println("1. Set current date");
+        System.out.println("2. create a custome date");
+        int choice = input.nextInt();
 
-            byte[] buffer = today.currentDay.getBytes();
-            ofile.write(buffer, 0, buffer.length);
+        if(choice == 1) {
+            FileOutputStream ofile = null;
+            try {
+                //didn't use append here because only one date can be set as default so cant append next to the old one as it is useless afterwards
+                //adding multiple dates for multiple users in the future assuming the program will be used by more than 1 user
+                ofile = new FileOutputStream(".\\file\\date.txt");
 
-            buffer = "\n".getBytes();
-            ofile.write(buffer, 0, buffer.length);
+                byte[] buffer = today.currentDay.getBytes();
+                ofile.write(buffer, 0, buffer.length);
 
-            buffer = today.currentMonth.getBytes();
-            ofile.write(buffer, 0, buffer.length);
+                buffer = "\n".getBytes();
+                ofile.write(buffer, 0, buffer.length);
 
-            buffer = "\n".getBytes();
-            ofile.write(buffer, 0, buffer.length);
+                buffer = today.currentMonth.getBytes();
+                ofile.write(buffer, 0, buffer.length);
 
-            buffer = today.currentYear.getBytes();
-            ofile.write(buffer, 0, buffer.length);
+                buffer = "\n".getBytes();
+                ofile.write(buffer, 0, buffer.length);
 
-            ofile.close();
-        } catch (Exception e) {
-            return;
-        } finally{
-            if(ofile != null)
+                buffer = today.currentYear.getBytes();
+                ofile.write(buffer, 0, buffer.length);
+
                 ofile.close();
+            } catch (Exception e) {
+                return;
+            } finally{
+                if(ofile != null)
+                    ofile.close();
+            }
+        } else if (choice == 2) {
+            int newDay;
+            int newMonth;
+            int newYear;
+
+            System.out.print("Enter day: ");
+            newDay = input.nextInt();
+
+            System.out.print("Enter month: ");
+            newMonth = input.nextInt();
+
+            System.out.print("Enter year: ");
+            newYear = input.nextInt();
+
+            FileOutputStream ofile = new FileOutputStream(".\\file\\date.txt");
+            try {
+                String Str_newDay = Integer.toString(newDay);
+                String Str_newMonth = Integer.toString(newMonth);
+                String Str_newYear = Integer.toString(newYear);
+
+                byte[] buffer = Str_newDay.getBytes();
+                ofile.write(buffer, 0, buffer.length);
+
+                buffer = "\n".getBytes();
+                ofile.write(buffer, 0, buffer.length);
+
+                buffer = Str_newMonth.getBytes();
+                ofile.write(buffer, 0, buffer.length);
+
+                buffer = "\n".getBytes();
+                ofile.write(buffer, 0, buffer.length);
+
+                buffer = Str_newYear.getBytes();
+                ofile.write(buffer, 0, buffer.length);
+
+                ofile.close();
+            } catch (Exception e) {
+                return;
+            }
         }
     }
     void allowanceDateStatus() {
@@ -106,6 +152,15 @@ class AllowanceDate {
                 round = currentMonth - latest.month;
                 if((currentDay >= 7) && (currentDay <= 11)) {
                     System.out.println("Message: Allowance date has ARRIVED!");
+
+                    System.out.println("Did you receive your allowance?(y/n)");
+                    String choice = input.nextLine();
+
+                    if(choice.equals("y")  || choice.equals("Y")) {
+                        CurrentBalance Allowance = new CurrentBalance();
+                        Allowance.createDepositeHistory();
+                    }
+
                 } else if (currentDay > 11) {
                     System.out.println("WARNING: Allowance date has PASSED!");
                 } else if (currentDay < 7) {
