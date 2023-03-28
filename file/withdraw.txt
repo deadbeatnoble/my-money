@@ -1,5 +1,4 @@
-10/03/2023 - 500.0 - GYM membership fee
-11/03/2023 - 200.0 - transporation
-13/03/2023 - 900.0 - cloth
-14/03/2023 - 400.0 - Food and drink
-20/03/2023 - 50.0 - mobile card
+28/03/2023 - 200.0 - Transportation
+28/03/2023 - 600.0 - cloth
+28/03/2023 - 400.0 - food and drinks
+28/03/2023 - 100.0 - loan

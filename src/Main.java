@@ -59,6 +59,22 @@ class AllowanceDate {
             createFirstAllowanceDate();
         }
     }
+    private void setAllowanceAmount() {
+        double allowanceAmount;
+        System.out.println("Please enter the amount you recieve as an allowance: ");
+        allowanceAmount = input.nextDouble();
+        String Str_allowanceAmount = Double.toString(allowanceAmount);
+        try {
+            FileOutputStream ofile = new FileOutputStream(".\\file\\allowance.txt");
+
+            byte[] buffer = Str_allowanceAmount.getBytes();
+            ofile.write(buffer, 0, buffer.length);
+
+            ofile.close();
+        } catch (Exception e) {
+            return;
+        }
+    }
     private void createFirstAllowanceDate() {
         //this helps us set the current date as the allowance date and save it to file.
         //currently only sets default date as allowance date... personal date setting will be added later
@@ -96,8 +112,7 @@ class AllowanceDate {
                 } catch (Exception e) {
                     return;
                 } finally{
-                    if(ofile != null)
-                        ofile.close();
+                    setAllowanceAmount();
                 }
             } else if (choice == 2) {
                 int newDay;
@@ -137,6 +152,8 @@ class AllowanceDate {
                     ofile.close();
                 } catch (Exception e) {
                     return;
+                } finally {
+                    setAllowanceAmount();
                 }
             }
         } catch (Exception e) {
@@ -181,33 +198,60 @@ class AllowanceDate {
         int currentDay = Integer.parseInt(today.currentDay);
         int currentYear = Integer.parseInt(today.currentYear);
 
-        if(currentYear >= latest.year) {
-            if(currentMonth >= latest.month) {
+        if (currentYear == latest.year) {
+            if(currentMonth == latest.month) {
+                System.out.println("Message: Allowance already taken this month on " + latest.day + "/" + latest.month + "/" + latest.year + " !");
+            } else if(currentMonth > latest.month) {
                 //counts the number of times the allowance must be received. (counts per month)
                 // if the month has passed without taking out the allowance next time the program is run it will add the missed monthly allowances
                 round = currentMonth - latest.month;
-                if((currentDay >= 7) && (currentDay <= 11)) {
-                    System.out.println("Message: Allowance date has ARRIVED!");
-                    //depositing allowance through this method
-                    if(round >= 2) {
-                        System.out.println("Total rounds of allowance available: " + round);
-                    }
-                    System.out.println("receive your allowances!");
-                        for (int i = 0; i < round; i++) {
-                            System.out.println("deposit for month " + (currentMonth - (i + latest.month) - 1));
-                            allowance.createDepositeHistory();
-                            latest.updateAllowanceDate();
-                        }
-                } else if (currentDay > 11) {
-                    System.out.println("WARNING: Allowance date has PASSED!");
-                } else if (currentDay < 7) {
-                    System.out.println("Message: Allowance date is NEAR!");
+                System.out.println("Message: Allowance date has ARRIVED!");
+                //depositing allowance through this method
+                if(round >= 2) {
+                    System.out.println("Total rounds of allowance available: " + round);
                 }
-            } else {
-                System.out.println("Message: Allowance not available yet!");
+                System.out.println("receive your allowances!");
+                for (int i = 0; i < round; i++) {
+                    System.out.println("deposit for month " + (currentMonth - (i + latest.month) - 1) + "(y/n)?");
+                    String choice = input.nextLine();
+
+                    if(choice.equals("y")) {
+                        try {
+                            Scanner ifile = new Scanner(new File(".//file//allowance.txt"));
+                            String StrAllowance = ifile.nextLine();
+                            allowance.appendDepositeHistory(today.currentDate, StrAllowance, "Monthly allowance!");
+                            updateAllowanceDate();
+                        } catch (Exception e) {
+                            return;
+                        }
+                    }
+                }
+            } else if(currentMonth < latest.month) {
+                System.out.println("Message: Either Invalid latest allowance date or wrong current date readings!");
+            }
+        } else if (currentYear > latest.year) {
+            if(currentMonth < latest.month) {
+                int last = 12 - latest.month;
+                round = last + currentMonth;
+
+                for (int i = 0; i < round; i++) {
+                    System.out.println("deposit for month " + i + "(y/n)?");
+                    String choice = input.nextLine();
+                    input.nextLine();
+                    if(choice.equals("y")) {
+                        try {
+                            Scanner ifile = new Scanner(new File(".//file//allowance.txt"));
+                            String StrAllowance = ifile.nextLine();
+                            allowance.appendDepositeHistory(today.currentDate, StrAllowance, "Monthly allowance!");
+                            updateAllowanceDate();
+                        } catch (Exception e) {
+                            return;
+                        }
+                    }
+                }
             }
         } else {
-            System.out.println("Message: Allowance not available yet!");
+            System.out.println("Message: Either Invalid latest allowance date or wrong current date readings!");
         }
 
     }
@@ -258,6 +302,51 @@ class CurrentBalance {
             return;
         }
     }
+    void appendDepositeHistory(String depo_date, String depo_amount, String depo_reason) {
+        try {
+            //we wrote true here in append so that we can add more records to the file and not remove the old ones that exist before
+            FileOutputStream ofile = new FileOutputStream(".//file//deposit.txt", true);
+
+            ofile.write(depo_date.getBytes());
+            ofile.write(" - ".getBytes());
+            ofile.write(depo_amount.getBytes());
+            ofile.write(" - ".getBytes());
+            ofile.write(depo_reason.getBytes());
+            ofile.write("\n".getBytes());
+
+
+            ofile.close();
+        } catch (IOException e) {
+            return;
+        } finally {
+            double double_depo_amount = Double.parseDouble(depo_amount);
+            balance += double_depo_amount;
+            updateBalance(balance);
+        }
+    }
+    void appendWithdrawalHistory(String with_date, String with_amount, String with_reason) {
+        try {
+            //we wrote true here in append so that we can add more records to the file and not remove the old ones that exist before
+            FileOutputStream ofile = new FileOutputStream(".//file//withdraw.txt", true);
+
+            ofile.write(with_date.getBytes());
+            ofile.write(" - ".getBytes());
+            ofile.write(with_amount.getBytes());
+            ofile.write(" - ".getBytes());
+            ofile.write(with_reason.getBytes());
+            ofile.write("\n".getBytes());
+
+
+            ofile.close();
+        } catch (IOException e) {
+            return;
+        } finally {
+            double double_with_amount = Double.parseDouble(with_amount);
+            balance -= double_with_amount;
+            updateBalance(balance);
+        }
+    }
+
     void createDepositeHistory() {
         //here we create the deposite history by writing the date, amount and reasons related to money to a file called deposite.txt
         double depo_amount;
@@ -273,24 +362,10 @@ class CurrentBalance {
         input.nextLine();
         depo_reason = input.nextLine();
 
-        try {
-            //we wrote true here in append so that we can add more records to the file and not remove the old ones that exist before
-            FileOutputStream ofile = new FileOutputStream(".//file//deposit.txt", true);
+        appendDepositeHistory(depo_date, Str_depo_amount, depo_reason);
 
-            ofile.write(depo_date.getBytes());
-            ofile.write(" - ".getBytes());
-            ofile.write(Str_depo_amount.getBytes());
-            ofile.write(" - ".getBytes());
-            ofile.write(depo_reason.getBytes());
-            ofile.write("\n".getBytes());
 
-            balance += depo_amount;
-            updateBalance(balance);
 
-            ofile.close();
-        } catch (IOException e) {
-            return;
-        }
     }
     void createWithdrawalHistory() {
         //here we create the withdrawal history by writing the date, amount and reasons related to money to a file called withdraw.txt
@@ -307,24 +382,7 @@ class CurrentBalance {
         input.nextLine();
         with_reason = input.nextLine();
 
-        try {
-            //we wrote true here in append so that we can add more records to the file and not remove the old ones that exist before
-            FileOutputStream ofile = new FileOutputStream(".//file//withdraw.txt", true);
-
-            ofile.write(with_date.getBytes());
-            ofile.write(" - ".getBytes());
-            ofile.write(Str_with_amount.getBytes());
-            ofile.write(" - ".getBytes());
-            ofile.write(with_reason.getBytes());
-            ofile.write("\n".getBytes());
-
-            balance -= with_amount;
-            updateBalance(balance);
-
-            ofile.close();
-        } catch (IOException e) {
-            return;
-        }
+        appendWithdrawalHistory(with_date, Str_with_amount, with_reason);
     }
 }
 public class Main {
