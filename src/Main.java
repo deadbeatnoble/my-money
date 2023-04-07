@@ -387,34 +387,102 @@ class CurrentBalance {
         appendWithdrawalHistory(with_date, Str_with_amount, with_reason);
     }
 }
+class FileAccess {
+    void ViewCurrentBalance() {
+        File file = new File(".\\file\\balance.txt");
+        if(file.exists()) {
+            try {
+                Scanner ifile = new Scanner(new File(".\\file\\balance.txt"));
+                String balance = ifile.nextLine();
+                System.out.println(balance);
+            } catch (Exception e) {
+                return;
+            }
+        }
+    }
+    void ViewDepositHistory() {
+        File file = new File(".\\file\\deposit.txt");
+        if(file.exists()) {
+            try {
+                Scanner ifile = new Scanner(new File(".//file//deposit.txt"));
+                while(ifile.hasNext()) {
+                    String record = ifile.nextLine();
+                    System.out.println(record);
+                }
+            } catch (Exception e) {
+                return;
+            }
+        }
+    }
+    void ViewWithdrawHistory() {
+        File file = new File(".\\file\\withdraw.txt");
+        if(file.exists()) {
+            try {
+                Scanner ifile = new Scanner(new File(".//file//withdraw.txt"));
+                while(ifile.hasNext()) {
+                    String record = ifile.nextLine();
+                    System.out.println(record);
+                }
+            } catch (Exception e) {
+                return;
+            }
+        }
+    }
+}
 public class Main {
     static Scanner input = new Scanner(System.in);
-    public static void othersmenu() {
 
+    public static void othersmenu() {
+        AllowanceDate allowance = new AllowanceDate();
+        FileAccess view = new FileAccess();
 
         System.out.println("\t********************************");
         System.out.println("\t*\t\tOTHER                  *");
         System.out.println("\t********************************");
         System.out.println("\t*\t1. View Deposit History    *");
         System.out.println("\t*\t2. View Withdrawal History *");
-        System.out.println("\t*\t3. Back to MainMenu        *");
+        System.out.println("\t*\t3. Allowance status        *");
+        System.out.println("\t*\t4. Back to MainMenu        *");
         System.out.println("\t********************************");
 
         int ch = input.nextInt();
 
         switch (ch) {
             case 1:
+                view.ViewDepositHistory();
+                try {
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                    return;
+                }
+                othersmenu();
                 break;
             case 2:
+                view.ViewWithdrawHistory();
+                try {
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                    return;
+                }
+                othersmenu();
                 break;
             case 3:
+                allowance.allowanceDateStatus();
+                try {
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                    return;
+                }
+                othersmenu();
+                break;
+            case 4:
                 mainmenu();
                 break;
         }
     }
     public static void mainmenu() {
         //created this method so that i can call it when needed since there is no goto keyword in java
-        AllowanceDate allowance = new AllowanceDate();
+        FileAccess view = new FileAccess();
         CurrentBalance user = new CurrentBalance();
 
         System.out.println("\t**************************");
@@ -422,7 +490,7 @@ public class Main {
         System.out.println("\t**************************");
         System.out.println("\t*\t1. Deposit           *");
         System.out.println("\t*\t2. Withdraw          *");
-        System.out.println("\t*\t3. Allowance Status  *");
+        System.out.println("\t*\t3. Balance           *");
         System.out.println("\t*\t4. Others            *");
         System.out.println("\t*\t5. Exit              *");
         System.out.println("\t**************************");
@@ -449,7 +517,7 @@ public class Main {
                 mainmenu();
                 break;
             case 3:
-                allowance.allowanceDateStatus();
+                view.ViewCurrentBalance();
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {
