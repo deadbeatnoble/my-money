@@ -4,16 +4,15 @@ import java.util.Date;
 import java.util.Scanner;
 
 class CurrentDate {
-    //assigning them all private so that the instance object can't cant access them and alter the raw datas obtained from the system
+    //this class is used to get the current date from the system and assign it to variables to be used in other classes to access date
+    //creating objects of class SimpleDateFormat and assigning them values of the day, month, year or all together as date from pc
     private final Date today = new Date();
-
-    //creating objects of class SimpleDateFormat and assigning them values of the day, month, year or all together ad date of current time from pc
     private final SimpleDateFormat String_day = new SimpleDateFormat("dd");
     private final SimpleDateFormat String_month = new SimpleDateFormat("MM");
     private final SimpleDateFormat String_year = new SimpleDateFormat("yyyy");
     private final SimpleDateFormat String_date = new SimpleDateFormat("dd/MM/yyyy");
 
-    //this is what is giving it an acceptable and readable format, without this it's just a random bunch of symbols
+    //this is what is giving it an acceptable and readable format, without this it's just a random bunch of symbols that cant be read properly in the console
     String currentDay = String_day.format(today);
     String currentMonth = String_month.format(today);
     String currentYear = String_year.format(today);
@@ -21,17 +20,14 @@ class CurrentDate {
 
 }
 class AllowanceDate {
-    //overall, deals with things related to the monthly allowance of user
+    //Overall, This class deals with things related to the monthly allowance of user
     int day;
     int month;
     int year;
     int round;
     Scanner input = new Scanner(System.in);
-
-
     AllowanceDate() {
-        //helps us read the default set time of the allowance date and assign it to variables such as day, month, year
-        //the way we access the variables by calling this constructor the access through the object created
+        //helps us read the default set time of the allowance date and assign it to variables such as day, month, year when an object for this class is instantiated
         File file = new File(".\\file\\date.txt");
         if(file.exists()) {
             try {
@@ -50,18 +46,19 @@ class AllowanceDate {
                         year = Integer.parseInt(line);
                     }
                     i++;
-                    //do stuff
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
+            //if the file:date doesn't exist then that means allowance date hasnt been set or file has been deleted. Hence, we create a new one!
             createFirstAllowanceDate();
         }
     }
     private void setAllowanceAmount() {
+        //This method is used to set the allowance amount to be received monthly
         double allowanceAmount;
-        System.out.println("Please enter the amount you recieve as an allowance: ");
+        System.out.println("Please enter the amount you receive as an allowance: ");
         allowanceAmount = input.nextDouble();
         String Str_allowanceAmount = Double.toString(allowanceAmount);
         try {
@@ -76,8 +73,7 @@ class AllowanceDate {
         }
     }
     private void createFirstAllowanceDate() {
-        //this helps us set the current date as the allowance date and save it to file.
-        //currently only sets default date as allowance date... personal date setting will be added later
+        //this helps us set the current date as the allowance date and save it to file or accepts custom date from user.
         try {
             CurrentDate today = new CurrentDate();
 
@@ -186,9 +182,8 @@ class AllowanceDate {
         }
     }
     void allowanceDateStatus() {
-        //WORKING PROGRESS!!!//
-        //this method helps to know the status of the user in reciving his/her allowance
-        //must call this method first to get a value from round.
+        //this method helps to know the status of the user in receiving his/her allowance
+        //if received then says "already received" if not then asks user if they want to receive it
         AllowanceDate latest = new AllowanceDate();
         CurrentDate today = new CurrentDate();
         CurrentBalance allowance = new CurrentBalance();
@@ -256,7 +251,7 @@ class AllowanceDate {
     }
 }
 class CurrentBalance {
-    //this class deals with adding and substructing the deposit and withdrawals of the user from the balance.
+    //this class deals with adding and subtracting the deposit and withdrawals of the user from the balance.
     //the money flow history is created and updated here
     CurrentDate today = new CurrentDate();
     Scanner input = new Scanner(System.in);
@@ -348,7 +343,7 @@ class CurrentBalance {
 
     void createDepositHistory() {
         //just accepts the data and passes it to the appendDepsoiteHistory which is where the appending to file happens
-        //here we create the deposite history by writing the date, amount and reasons related to money to a file called deposite.txt
+        //here we create the deposit history by writing the date, amount and reasons related to money to a file called deposit.txt
         double depo_amount;
         String Str_depo_amount;
         String depo_reason;
@@ -363,12 +358,9 @@ class CurrentBalance {
         depo_reason = input.nextLine();
 
         appendDepositHistory(depo_date, Str_depo_amount, depo_reason);
-
-
-
     }
     void createWithdrawalHistory() {
-        //just accepts the data and passes it to the appendDepsoiteHistory which is where the appending to file happens
+        //just accepts the data and passes it to the appendWithdrawHistory which is where the appending to file happens
         //here we create the withdrawal history by writing the date, amount and reasons related to money to a file called withdraw.txt
         double with_amount;
         String Str_with_amount;
@@ -387,6 +379,7 @@ class CurrentBalance {
     }
 }
 class FileAccess {
+    //This class is used to read from the file and display to user: current balance, deposits and withdrawals
     void ViewCurrentBalance() {
         File file = new File(".\\file\\balance.txt");
         if(file.exists()) {
