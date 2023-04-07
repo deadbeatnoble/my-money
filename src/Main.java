@@ -5,13 +5,13 @@ import java.util.Scanner;
 
 class CurrentDate {
     //assigning them all private so that the instance object can't cant access them and alter the raw datas obtained from the system
-    private Date today = new Date();
+    private final Date today = new Date();
 
     //creating objects of class SimpleDateFormat and assigning them values of the day, month, year or all together ad date of current time from pc
-    private SimpleDateFormat String_day = new SimpleDateFormat("dd");
-    private SimpleDateFormat String_month = new SimpleDateFormat("MM");
-    private SimpleDateFormat String_year = new SimpleDateFormat("yyyy");
-    private SimpleDateFormat String_date = new SimpleDateFormat("dd/MM/yyyy");
+    private final SimpleDateFormat String_day = new SimpleDateFormat("dd");
+    private final SimpleDateFormat String_month = new SimpleDateFormat("MM");
+    private final SimpleDateFormat String_year = new SimpleDateFormat("yyyy");
+    private final SimpleDateFormat String_date = new SimpleDateFormat("dd/MM/yyyy");
 
     //this is what is giving it an acceptable and readable format, without this it's just a random bunch of symbols
     String currentDay = String_day.format(today);
@@ -53,7 +53,7 @@ class AllowanceDate {
                     //do stuff
                 }
             } catch (Exception e) {
-                return;
+                e.printStackTrace();
             }
         } else {
             createFirstAllowanceDate();
@@ -72,7 +72,7 @@ class AllowanceDate {
 
             ofile.close();
         } catch (Exception e) {
-            return;
+            e.printStackTrace();
         }
     }
     private void createFirstAllowanceDate() {
@@ -87,11 +87,10 @@ class AllowanceDate {
             int choice = input.nextInt();
 
             if(choice == 1) {
-                FileOutputStream ofile = null;
                 try {
                     //didn't use append here because only one date can be set as default so cant append next to the old one as it is useless afterwards
                     //adding multiple dates for multiple users in the future assuming the program will be used by more than 1 user
-                    ofile = new FileOutputStream(".\\file\\date.txt");
+                    FileOutputStream ofile = new FileOutputStream(".\\file\\date.txt");
 
                     byte[] buffer = today.currentDay.getBytes();
                     ofile.write(buffer, 0, buffer.length);
@@ -110,7 +109,7 @@ class AllowanceDate {
 
                     ofile.close();
                 } catch (Exception e) {
-                    return;
+                    e.printStackTrace();
                 } finally{
                     setAllowanceAmount();
                 }
@@ -151,13 +150,13 @@ class AllowanceDate {
 
                     ofile.close();
                 } catch (Exception e) {
-                    return;
+                    e.printStackTrace();
                 } finally {
                     setAllowanceAmount();
                 }
             }
         } catch (Exception e) {
-            return;
+            e.printStackTrace();
         }
     }
     void updateAllowanceDate() {
@@ -183,7 +182,7 @@ class AllowanceDate {
 
             ofile.close();
         } catch (Exception e) {
-            return;
+            e.printStackTrace();
         }
     }
     void allowanceDateStatus() {
@@ -195,7 +194,7 @@ class AllowanceDate {
         CurrentBalance allowance = new CurrentBalance();
 
         int currentMonth = Integer.parseInt(today.currentMonth);
-        int currentDay = Integer.parseInt(today.currentDay);
+        //int currentDay = Integer.parseInt(today.currentDay); no use as of now, hence commented out!
         int currentYear = Integer.parseInt(today.currentYear);
 
         if (currentYear == latest.year) {
@@ -222,7 +221,7 @@ class AllowanceDate {
                             allowance.appendDepositHistory(today.currentDate, StrAllowance, "Monthly allowance!");
                             updateAllowanceDate();
                         } catch (Exception e) {
-                            return;
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -245,7 +244,7 @@ class AllowanceDate {
                             allowance.appendDepositHistory(today.currentDate, StrAllowance, "Monthly allowance!");
                             updateAllowanceDate();
                         } catch (Exception e) {
-                            return;
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -290,16 +289,16 @@ class CurrentBalance {
                 ofile.close();
             }
         } catch (Exception e) {
-            return;
+            e.printStackTrace();
         }
     }
     private void updateBalance(double newBalance) {
         try {
-            String StrNewBalance = Double.toString(newBalance);
             FileOutputStream ofile = new FileOutputStream(".//file//balance.txt");
+            String StrNewBalance = Double.toString(newBalance);
             ofile.write(StrNewBalance.getBytes());
         } catch (Exception e) {
-            return;
+            e.printStackTrace();
         }
     }
     void appendDepositHistory(String depo_date, String depo_amount, String depo_reason) {
@@ -317,7 +316,7 @@ class CurrentBalance {
 
             ofile.close();
         } catch (IOException e) {
-            return;
+            e.printStackTrace();
         } finally {
             double double_depo_amount = Double.parseDouble(depo_amount);
             balance += double_depo_amount;
@@ -339,7 +338,7 @@ class CurrentBalance {
 
             ofile.close();
         } catch (IOException e) {
-            return;
+            e.printStackTrace();
         } finally {
             double double_with_amount = Double.parseDouble(with_amount);
             balance -= double_with_amount;
@@ -396,7 +395,7 @@ class FileAccess {
                 String balance = ifile.nextLine();
                 System.out.println(balance);
             } catch (Exception e) {
-                return;
+                e.printStackTrace();
             }
         }
     }
@@ -410,7 +409,7 @@ class FileAccess {
                     System.out.println(record);
                 }
             } catch (Exception e) {
-                return;
+                e.printStackTrace();
             }
         }
     }
@@ -424,7 +423,7 @@ class FileAccess {
                     System.out.println(record);
                 }
             } catch (Exception e) {
-                return;
+                e.printStackTrace();
             }
         }
     }
@@ -453,7 +452,7 @@ public class Main {
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {
-                    return;
+                    e.printStackTrace();
                 }
                 othersmenu();
                 break;
@@ -462,7 +461,7 @@ public class Main {
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {
-                    return;
+                    e.printStackTrace();
                 }
                 othersmenu();
                 break;
@@ -471,7 +470,7 @@ public class Main {
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {
-                    return;
+                    e.printStackTrace();
                 }
                 othersmenu();
                 break;
@@ -503,7 +502,7 @@ public class Main {
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {
-                    return;
+                    e.printStackTrace();
                 }
                 mainmenu();
                 break;
@@ -512,7 +511,7 @@ public class Main {
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {
-                    return;
+                    e.printStackTrace();
                 }
                 mainmenu();
                 break;
@@ -521,7 +520,7 @@ public class Main {
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {
-                    return;
+                    e.printStackTrace();
                 }
                 mainmenu();
                 break;
@@ -530,7 +529,7 @@ public class Main {
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {
-                    return;
+                    e.printStackTrace();
                 }
                 mainmenu();
                 break;
