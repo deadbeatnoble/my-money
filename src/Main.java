@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Scanner;
 
 class CurrentDate {
-    //assigning them all private so that the instance object can't cant access them and alter data
+    //assigning them all private so that the instance object can't cant access them and alter the raw datas obtained from the system
     private Date today = new Date();
 
     //creating objects of class SimpleDateFormat and assigning them values of the day, month, year or all together ad date of current time from pc
@@ -219,7 +219,7 @@ class AllowanceDate {
                         try {
                             Scanner ifile = new Scanner(new File(".//file//allowance.txt"));
                             String StrAllowance = ifile.nextLine();
-                            allowance.appendDepositeHistory(today.currentDate, StrAllowance, "Monthly allowance!");
+                            allowance.appendDepositHistory(today.currentDate, StrAllowance, "Monthly allowance!");
                             updateAllowanceDate();
                         } catch (Exception e) {
                             return;
@@ -242,7 +242,7 @@ class AllowanceDate {
                         try {
                             Scanner ifile = new Scanner(new File(".//file//allowance.txt"));
                             String StrAllowance = ifile.nextLine();
-                            allowance.appendDepositeHistory(today.currentDate, StrAllowance, "Monthly allowance!");
+                            allowance.appendDepositHistory(today.currentDate, StrAllowance, "Monthly allowance!");
                             updateAllowanceDate();
                         } catch (Exception e) {
                             return;
@@ -302,7 +302,7 @@ class CurrentBalance {
             return;
         }
     }
-    void appendDepositeHistory(String depo_date, String depo_amount, String depo_reason) {
+    void appendDepositHistory(String depo_date, String depo_amount, String depo_reason) {
         try {
             //we wrote true here in append so that we can add more records to the file and not remove the old ones that exist before
             FileOutputStream ofile = new FileOutputStream(".//file//deposit.txt", true);
@@ -347,7 +347,8 @@ class CurrentBalance {
         }
     }
 
-    void createDepositeHistory() {
+    void createDepositHistory() {
+        //just accepts the data and passes it to the appendDepsoiteHistory which is where the appending to file happens
         //here we create the deposite history by writing the date, amount and reasons related to money to a file called deposite.txt
         double depo_amount;
         String Str_depo_amount;
@@ -362,12 +363,13 @@ class CurrentBalance {
         input.nextLine();
         depo_reason = input.nextLine();
 
-        appendDepositeHistory(depo_date, Str_depo_amount, depo_reason);
+        appendDepositHistory(depo_date, Str_depo_amount, depo_reason);
 
 
 
     }
     void createWithdrawalHistory() {
+        //just accepts the data and passes it to the appendDepsoiteHistory which is where the appending to file happens
         //here we create the withdrawal history by writing the date, amount and reasons related to money to a file called withdraw.txt
         double with_amount;
         String Str_with_amount;
@@ -387,23 +389,49 @@ class CurrentBalance {
 }
 public class Main {
     static Scanner input = new Scanner(System.in);
+    public static void othersmenu() {
+
+
+        System.out.println("\t********************************");
+        System.out.println("\t*\t\tOTHER                  *");
+        System.out.println("\t********************************");
+        System.out.println("\t*\t1. View Deposit History    *");
+        System.out.println("\t*\t2. View Withdrawal History *");
+        System.out.println("\t*\t3. Back to MainMenu        *");
+        System.out.println("\t********************************");
+
+        int ch = input.nextInt();
+
+        switch (ch) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                mainmenu();
+                break;
+        }
+    }
     public static void mainmenu() {
         //created this method so that i can call it when needed since there is no goto keyword in java
         AllowanceDate allowance = new AllowanceDate();
         CurrentBalance user = new CurrentBalance();
 
-        System.out.println("\t\tMENU");
-        System.out.println("\t1. Deposit");
-        System.out.println("\t2. Withdraw");
-        System.out.println("\t3. Allowance Status");
-        System.out.println("\t4. Setting");
-        System.out.println("\t5. Exit");
+        System.out.println("\t**************************");
+        System.out.println("\t*\t\tMENU             *");
+        System.out.println("\t**************************");
+        System.out.println("\t*\t1. Deposit           *");
+        System.out.println("\t*\t2. Withdraw          *");
+        System.out.println("\t*\t3. Allowance Status  *");
+        System.out.println("\t*\t4. Others            *");
+        System.out.println("\t*\t5. Exit              *");
+        System.out.println("\t**************************");
 
         int choice = input.nextInt();
 
         switch (choice) {
             case 1:
-                user.createDepositeHistory();
+                user.createDepositHistory();
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {
@@ -430,7 +458,7 @@ public class Main {
                 mainmenu();
                 break;
             case 4:
-                System.out.println("Coming Soon!");
+                othersmenu();
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {
