@@ -1,3 +1,5 @@
+<h1>My Money</h1>
+
 _*Basically a program to show an overview of monthly allowance process._
 
 **FEATURE**
@@ -11,10 +13,10 @@ _*Basically a program to show an overview of monthly allowance process._
 **FUNCTIONALITY**
 
 - reads time when run
-    - calculates the time left for the monthly salary
-- saves reasons for withdrawal/deposits on file
-    - saves the reason a certain amount was withdrawn or deposited.
-    - sorts the amounts withdrawn
+    - checks if the monthly allowance has arrived
+- withdrawal/deposits
+    - saves then views the reason a certain amount was withdrawn or deposited.
+    - sorts the amounts withdrawn or deposited
 - log in or sign up
     - signing up to use the program
     - loging in to view your account
