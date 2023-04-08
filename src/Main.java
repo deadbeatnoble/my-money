@@ -2,7 +2,82 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
+class Account {
+    Scanner input = new Scanner(System.in);
+    String user_username;
+    int user_password;
+    Account() {
+        File file = new File(".\\file\\account.txt");
+        if(file.exists()) {
+            try {
+                Scanner ifile = new Scanner(new File(".\\file\\account.txt"));
+                int lines = 0;
+                while(ifile.hasNextLine()) {
+                    String line = ifile.nextLine();
+                    if(lines == 0) {
+                        user_username = line;
+                    } else if (lines == 1) {
+                        String Str_user_username = line;
+                        user_password = Integer.parseInt(Str_user_username);
+                    }
+                    lines++;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            checkAccount();
+        } else {
+            createAccount();
+        }
+    }
+    void createAccount() {
+        String username;
+        int password;
+        int confirm;
 
+        System.out.println("\tSign Up");
+        System.out.println("Enter Username: ");
+        username = input.nextLine();
+        System.out.println("Enter Password: ");
+        password = input.nextInt();
+        System.out.println("Confirm Password: ");
+        confirm = input.nextInt();
+
+        if(password != confirm) {
+            createAccount();
+        } else {
+            try {
+                FileOutputStream ofile = new FileOutputStream(".\\file\\account.txt");
+                ofile.write(username.getBytes());
+
+                ofile.write("\n".getBytes());
+
+                String Str_password = Integer.toString(password);
+                ofile.write(Str_password.getBytes());
+
+                ofile.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+    void checkAccount() {
+        String username;
+        int password;
+
+        System.out.println("\tSign in");
+        System.out.println("Username: ");
+        username = input.nextLine();
+        System.out.println("Password: ");
+        password = input.nextInt();
+
+        if(!((username.equals(user_username)) && (password == user_password))) {
+            System.out.println("Message: Invalid username or password!");
+            checkAccount();
+        }
+    }
+}
 class CurrentDate {
     //this class is used to get the current date from the system and assign it to variables to be used in other classes to access date
     //creating objects of class SimpleDateFormat and assigning them values of the day, month, year or all together as date from pc
@@ -531,6 +606,7 @@ public class Main {
         }
     }
     public static void main(String[] argvs) {
+        Account account = new Account();
         mainmenu();
     }
 }
