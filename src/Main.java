@@ -36,11 +36,11 @@ class Account {
         int confirm;
 
         System.out.println("\tSign Up");
-        System.out.println("Enter Username: ");
+        System.out.print("Enter Username: ");
         username = input.nextLine();
-        System.out.println("Enter Password: ");
+        System.out.print("Enter Password: ");
         password = input.nextInt();
-        System.out.println("Confirm Password: ");
+        System.out.print("Confirm Password: ");
         confirm = input.nextInt();
 
         if(password != confirm) {
@@ -67,9 +67,9 @@ class Account {
         int password;
 
         System.out.println("\tSign in");
-        System.out.println("Username: ");
+        System.out.print("Username: ");
         username = input.nextLine();
-        System.out.println("Password: ");
+        System.out.print("Password: ");
         password = input.nextInt();
 
         if(!((username.equals(user_username)) && (password == user_password))) {
@@ -122,8 +122,11 @@ class AllowanceDate {
                     }
                     i++;
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                allowanceDateStatus();
             }
         } else {
             //if the file:date doesn't exist then that means allowance date hasnt been set or file has been deleted. Hence, we create a new one!
@@ -133,7 +136,7 @@ class AllowanceDate {
     private void setAllowanceAmount() {
         //This method is used to set the allowance amount to be received monthly
         double allowanceAmount;
-        System.out.println("Please enter the amount you receive as an allowance: ");
+        System.out.print("Please enter the amount you receive as an allowance: ");
         allowanceAmount = input.nextDouble();
         String Str_allowanceAmount = Double.toString(allowanceAmount);
         try {
@@ -259,7 +262,6 @@ class AllowanceDate {
     void allowanceDateStatus() {
         //this method helps to know the status of the user in receiving his/her allowance
         //if received then says "already received" if not then asks user if they want to receive it
-        AllowanceDate latest = new AllowanceDate();
         CurrentDate today = new CurrentDate();
         CurrentBalance allowance = new CurrentBalance();
 
@@ -267,13 +269,13 @@ class AllowanceDate {
         //int currentDay = Integer.parseInt(today.currentDay); no use as of now, hence commented out!
         int currentYear = Integer.parseInt(today.currentYear);
 
-        if (currentYear == latest.year) {
-            if(currentMonth == latest.month) {
-                System.out.println("Message: Allowance already taken this month on " + latest.day + "/" + latest.month + "/" + latest.year + " !");
-            } else if(currentMonth > latest.month) {
+        if (currentYear == year) {
+            if(currentMonth == month) {
+                System.out.println("Message: Allowance already taken this month on " + day + "/" + month + "/" + year + " !");
+            } else if(currentMonth > month) {
                 //counts the number of times the allowance must be received. (counts per month)
                 // if the month has passed without taking out the allowance next time the program is run it will add the missed monthly allowances
-                round = currentMonth - latest.month;
+                round = currentMonth - month;
                 System.out.println("Message: Allowance date has ARRIVED!");
                 //depositing allowance through this method
                 if(round >= 2) {
@@ -281,7 +283,7 @@ class AllowanceDate {
                 }
                 System.out.println("receive your allowances!");
                 for (int i = 0; i < round; i++) {
-                    System.out.println("deposit for month " + (currentMonth - (i + latest.month) - 1) + "(y/n)?");
+                    System.out.println("deposit for month " + (currentMonth - (i + month) - 1) + "(y/n)?");
                     String choice = input.nextLine();
 
                     if(choice.equals("y")) {
@@ -295,12 +297,12 @@ class AllowanceDate {
                         }
                     }
                 }
-            } else if(currentMonth < latest.month) {
+            } else if(currentMonth < month) {
                 System.out.println("Message: Either Invalid latest allowance date or wrong current date readings!");
             }
-        } else if (currentYear > latest.year) {
-            if(currentMonth < latest.month) {
-                int last = 12 - latest.month;
+        } else if (currentYear > year) {
+            if(currentMonth < month) {
+                int last = 12 - month;
                 round = last + currentMonth;
 
                 for (int i = 0; i < round; i++) {
@@ -343,13 +345,12 @@ class CurrentBalance {
                 balance = Double.parseDouble(StrAmount);
             } else {
                 FileOutputStream ofile = new FileOutputStream(".//file//balance.txt");
-                System.out.println("Account Empty!");
-                System.out.println("Would you like to add a starter amount to your new account(y/n)?");
+                System.out.print("Would you like to add a starter amount to your new account(y/n)? ");
                 String choice = input.nextLine();
-                if(choice.equals("y")) {
-                    System.out.println("Enter amount: ");
+                if(choice.equals("y") || choice.equals("Y")) {
+                    System.out.print("Enter amount: ");
                     amount = input.nextDouble();
-                } else if (choice.equals("n")) {
+                } else if (choice.equals("n") || choice.equals("N")) {
                     amount = 0;
                 }
                 balance = amount;
@@ -357,6 +358,7 @@ class CurrentBalance {
                 ofile.write(StrBalance.getBytes());
 
                 ofile.close();
+                System.out.println("Account Created!");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -424,11 +426,11 @@ class CurrentBalance {
         String depo_reason;
         String depo_date = today.currentDate;
 
-        System.out.println("Enter amount: ");
+        System.out.print("Enter amount: ");
         depo_amount = input.nextDouble();
         Str_depo_amount = Double.toString(depo_amount);
 
-        System.out.println("Enter reason: ");
+        System.out.print("Enter reason: ");
         input.nextLine();
         depo_reason = input.nextLine();
 
@@ -442,11 +444,11 @@ class CurrentBalance {
         String with_reason;
         String with_date = today.currentDate;
 
-        System.out.println("Enter amount: ");
+        System.out.print("Enter amount: ");
         with_amount = input.nextDouble();
         Str_with_amount = Double.toString(with_amount);
 
-        System.out.println("Enter reason: ");
+        System.out.print("Enter reason: ");
         input.nextLine();
         with_reason = input.nextLine();
 
@@ -498,9 +500,7 @@ class FileAccess {
 }
 public class Main {
     static Scanner input = new Scanner(System.in);
-
     public static void othersmenu() {
-        AllowanceDate allowance = new AllowanceDate();
         FileAccess view = new FileAccess();
 
         System.out.println("\t********************************");
@@ -518,8 +518,9 @@ public class Main {
             case 1:
                 view.ViewDepositHistory();
                 try {
-                    Thread.sleep(2000);
-                } catch (Exception e) {
+                    System.out.println("Press any key to continue...");
+                    System.in.read();
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
                 othersmenu();
@@ -527,14 +528,15 @@ public class Main {
             case 2:
                 view.ViewWithdrawHistory();
                 try {
-                    Thread.sleep(2000);
-                } catch (Exception e) {
+                    System.out.print("Press any key to continue...");
+                    System.in.read();
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
                 othersmenu();
                 break;
             case 3:
-                allowance.allowanceDateStatus();
+                new AllowanceDate();
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {
@@ -586,8 +588,9 @@ public class Main {
             case 3:
                 view.ViewCurrentBalance();
                 try {
-                    Thread.sleep(2000);
-                } catch (Exception e) {
+                    System.out.print("Press any key to continue...");
+                    System.in.read();
+                }catch (Exception e) {
                     e.printStackTrace();
                 }
                 mainmenu();
