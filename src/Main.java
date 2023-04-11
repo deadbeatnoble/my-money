@@ -1,11 +1,12 @@
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Scanner;
 class Account {
-    Scanner input = new Scanner(System.in);
-    String user_username;
-    int user_password;
+    private Scanner input = new Scanner(System.in);
+    private String user_username;
+    private String user_password;
     Account() {
         File file = new File(".\\file\\account.txt");
         if(file.exists()) {
@@ -17,8 +18,7 @@ class Account {
                     if(lines == 0) {
                         user_username = line;
                     } else if (lines == 1) {
-                        String Str_user_username = line;
-                        user_password = Integer.parseInt(Str_user_username);
+                        user_password = line;
                     }
                     lines++;
                 }
@@ -26,25 +26,26 @@ class Account {
                 e.printStackTrace();
             }
             checkAccount();
+            new AllowanceDate();
         } else {
             createAccount();
             new AllowanceDate();
         }
     }
-    void createAccount() {
+    private void createAccount() {
         String username;
-        int password;
-        int confirm;
+        String password;
+        String confirm;
 
         System.out.println("\tSign Up");
         System.out.print("Enter Username: ");
         username = input.nextLine();
         System.out.print("Enter Password: ");
-        password = input.nextInt();
+        password = input.nextLine();
         System.out.print("Confirm Password: ");
-        confirm = input.nextInt();
+        confirm = input.nextLine();
 
-        if(password != confirm) {
+        if(!Objects.equals(password, confirm)) {
             createAccount();
         } else {
             try {
@@ -53,8 +54,7 @@ class Account {
 
                 ofile.write("\n".getBytes());
 
-                String Str_password = Integer.toString(password);
-                ofile.write(Str_password.getBytes());
+                ofile.write(password.getBytes());
 
                 ofile.close();
             } catch (Exception e) {
@@ -63,17 +63,17 @@ class Account {
         }
 
     }
-    void checkAccount() {
+    private void checkAccount() {
         String username;
-        int password;
+        String password;
 
         System.out.println("\tSign in");
         System.out.print("Username: ");
         username = input.nextLine();
         System.out.print("Password: ");
-        password = input.nextInt();
+        password = input.nextLine();
 
-        if(!((username.equals(user_username)) && (password == user_password))) {
+        if(!((username.equals(user_username)) && (password.equals(user_password)))) {
             System.out.println("Message: Invalid username or password!");
             input.nextLine();
             checkAccount();
@@ -98,13 +98,13 @@ class CurrentDate {
 }
 class AllowanceDate {
     //Overall, This class deals with things related to the monthly allowance of user
-    int day;
-    int month;
-    int year;
-    int amount;
-    int round;
-    Scanner input = new Scanner(System.in);
-    CurrentDate today = new CurrentDate();
+    private int day;
+    private int month;
+    private int year;
+    private int amount;
+    private int round;
+    private Scanner input = new Scanner(System.in);
+    private CurrentDate today = new CurrentDate();
     AllowanceDate() {
         File file = new File(".\\file\\date.txt");
         if(file.exists()) {
@@ -307,10 +307,10 @@ class AllowanceDate {
 class CurrentBalance {
     //this class deals with adding and subtracting the deposit and withdrawals of the user from the balance.
     //the money flow history is created and updated here
-    CurrentDate today = new CurrentDate();
-    Scanner input = new Scanner(System.in);
-    double balance;
-    double amount;
+    private CurrentDate today = new CurrentDate();
+    private Scanner input = new Scanner(System.in);
+    private double balance;
+    private double amount;
     CurrentBalance() {
         //if file doesn't exist it will create a file and either asks for default starter balance or just gives it 0
         //if file does exist them it read from file and assign it to global variable balance
@@ -372,7 +372,7 @@ class CurrentBalance {
             updateBalance(balance);
         }
     }
-    void appendWithdrawalHistory(String with_date, String with_amount, String with_reason) {
+    private void appendWithdrawalHistory(String with_date, String with_amount, String with_reason) {
         try {
             //we wrote true here in append so that we can add more records to the file and not remove the old ones that exist before
             FileOutputStream ofile = new FileOutputStream(".//file//withdraw.txt", true);
@@ -458,6 +458,8 @@ class FileAccess {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            System.out.println("Message: User has not made any deposits yet!");
         }
     }
     void ViewWithdrawHistory() {
@@ -472,6 +474,8 @@ class FileAccess {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }else {
+            System.out.println("Message: User has not made any withdrawals yet!");
         }
     }
 }
