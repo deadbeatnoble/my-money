@@ -28,6 +28,7 @@ class Account {
             checkAccount();
         } else {
             createAccount();
+            new AllowanceDate();
         }
     }
     void createAccount() {
@@ -74,6 +75,7 @@ class Account {
 
         if(!((username.equals(user_username)) && (password == user_password))) {
             System.out.println("Message: Invalid username or password!");
+            input.nextLine();
             checkAccount();
         }
     }
@@ -99,84 +101,72 @@ class AllowanceDate {
     int day;
     int month;
     int year;
+    int amount;
     int round;
     Scanner input = new Scanner(System.in);
+    CurrentDate today = new CurrentDate();
     AllowanceDate() {
-        //helps us read the default set time of the allowance date and assign it to variables such as day, month, year when an object for this class is instantiated
         File file = new File(".\\file\\date.txt");
         if(file.exists()) {
+            readLatestAllowanceDate();
+        } else {
+            //method to create the file...?????
+            //call back the constructor???
+            setAllowanceDate();
+        }
+        file = new File(".\\file\\amount.txt");
+        if(file.exists()) {
             try {
-                Scanner ifile = new Scanner(new File(".\\file\\date.txt"));
-                int i = 0;
-                while(ifile.hasNextLine())
-                {
-                    // the .nextLine() helps with reading the file from LINE to LINE only
-                    // .hasNextLine() is useful for knowing the file has a next line ready... returns false if there is none hence, the loop terminates
-                    String line = ifile.nextLine();
-                    if(i == 0) {
-                        day = Integer.parseInt(line);
-                    } else if (i == 1) {
-                        month = Integer.parseInt(line);
-                    } else if (i == 2) {
-                        year = Integer.parseInt(line);
-                    }
-                    i++;
-                }
-
+                Scanner ifile = new Scanner(new File(".\\file\\amount.txt"));
+                amount = Integer.parseInt(ifile.nextLine());
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                allowanceDateStatus();
             }
         } else {
-            //if the file:date doesn't exist then that means allowance date hasnt been set or file has been deleted. Hence, we create a new one!
-            createFirstAllowanceDate();
+            //method to create the file...?????
+            //call back the constructor???
+            setAllowanceAmount();
         }
+        //call allowanceDateStatus...!!!!
     }
-    private void setAllowanceAmount() {
-        //This method is used to set the allowance amount to be received monthly
-        double allowanceAmount;
-        System.out.print("Please enter the amount you receive as an allowance: ");
-        allowanceAmount = input.nextDouble();
-        String Str_allowanceAmount = Double.toString(allowanceAmount);
+    private void readLatestAllowanceDate() {
         try {
-            FileOutputStream ofile = new FileOutputStream(".\\file\\allowance.txt");
-
-            byte[] buffer = Str_allowanceAmount.getBytes();
-            ofile.write(buffer, 0, buffer.length);
-
-            ofile.close();
+            Scanner ifile = new Scanner(new File(".\\file\\date.txt"));
+            int lines = 0;
+            while (ifile.hasNextLine()) {
+                String line = ifile.nextLine();
+                if(lines == 0) {
+                    day = Integer.parseInt(line);
+                } else if (lines == 1) {
+                    month = Integer.parseInt(line);
+                } else if (lines == 2) {
+                    year = Integer.parseInt(line);
+                }
+                lines++;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    private void createFirstAllowanceDate() {
-        //this helps us set the current date as the allowance date and save it to file or accepts custom date from user.
-        try {
-            CurrentDate today = new CurrentDate();
+    private void setAllowanceDate() {
+        System.out.println("\t\tSet Allowance Date");
+        System.out.println("\t1. Set Current Date");
+        System.out.println("\t2. Set Custom Date");
+        int ch = input.nextInt();
 
-            System.out.println("\t\tSet Allowance Date");
-            System.out.println("\t1. Set current date");
-            System.out.println("\t2. create a custom date");
-            int choice = input.nextInt();
-
-            if(choice == 1) {
+        switch (ch) {
+            case 1:
                 try {
-                    //didn't use append here because only one date can be set as default so cant append next to the old one as it is useless afterwards
-                    //adding multiple dates for multiple users in the future assuming the program will be used by more than 1 user
                     FileOutputStream ofile = new FileOutputStream(".\\file\\date.txt");
-
                     byte[] buffer = today.currentDay.getBytes();
                     ofile.write(buffer, 0, buffer.length);
 
-                    buffer = "\n".getBytes();
-                    ofile.write(buffer, 0, buffer.length);
+                    ofile.write("\n".getBytes());
 
                     buffer = today.currentMonth.getBytes();
                     ofile.write(buffer, 0, buffer.length);
 
-                    buffer = "\n".getBytes();
-                    ofile.write(buffer, 0, buffer.length);
+                    ofile.write("\n".getBytes());
 
                     buffer = today.currentYear.getBytes();
                     ofile.write(buffer, 0, buffer.length);
@@ -184,75 +174,52 @@ class AllowanceDate {
                     ofile.close();
                 } catch (Exception e) {
                     e.printStackTrace();
-                } finally{
-                    setAllowanceAmount();
                 }
-            } else if (choice == 2) {
-                int newDay;
-                int newMonth;
-                int newYear;
+                break;
+            case 2:
+                int Aday;
+                int Amonth;
+                int Ayear;
 
                 System.out.print("Enter day: ");
-                newDay = input.nextInt();
-
+                Aday = input.nextInt();
                 System.out.print("Enter month: ");
-                newMonth = input.nextInt();
-
+                Amonth = input.nextInt();
                 System.out.print("Enter year: ");
-                newYear = input.nextInt();
+                Ayear = input.nextInt();
 
-                FileOutputStream ofile = new FileOutputStream(".\\file\\date.txt");
+                String SAday = Integer.toString(Aday);
+                String SAmonth = Integer.toString(Amonth);
+                String SAyear = Integer.toString(Ayear);
+
                 try {
-                    String Str_newDay = Integer.toString(newDay);
-                    String Str_newMonth = Integer.toString(newMonth);
-                    String Str_newYear = Integer.toString(newYear);
-
-                    byte[] buffer = Str_newDay.getBytes();
+                    FileOutputStream ofile = new FileOutputStream(".\\file\\date.txt");
+                    byte[] buffer = SAday.getBytes();
                     ofile.write(buffer, 0, buffer.length);
 
-                    buffer = "\n".getBytes();
+                    ofile.write("\n".getBytes());
+
+                    buffer = SAmonth.getBytes();
                     ofile.write(buffer, 0, buffer.length);
 
-                    buffer = Str_newMonth.getBytes();
-                    ofile.write(buffer, 0, buffer.length);
+                    ofile.write("\n".getBytes());
 
-                    buffer = "\n".getBytes();
-                    ofile.write(buffer, 0, buffer.length);
-
-                    buffer = Str_newYear.getBytes();
+                    buffer = SAyear.getBytes();
                     ofile.write(buffer, 0, buffer.length);
 
                     ofile.close();
                 } catch (Exception e) {
                     e.printStackTrace();
-                } finally {
-                    setAllowanceAmount();
                 }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+                break;
         }
     }
-    void updateAllowanceDate() {
-        //update balance after either deposit or withdraw
+    private void setAllowanceAmount() {
+        System.out.print("Please enter the amount you receive as an allowance: ");
+        amount = input.nextInt();
         try {
-            FileOutputStream ofile = new FileOutputStream(".\\file\\date.txt");
-            CurrentDate latestAllowanceTaken = new CurrentDate();
-
-            byte[] buffer = latestAllowanceTaken.currentDay.getBytes();
-            ofile.write(buffer, 0, buffer.length);
-
-            buffer = "\n".getBytes();
-            ofile.write(buffer, 0, buffer.length);
-
-            buffer = latestAllowanceTaken.currentMonth.getBytes();
-            ofile.write(buffer, 0, buffer.length);
-
-            buffer = "\n".getBytes();
-            ofile.write(buffer, 0, buffer.length);
-
-            buffer = latestAllowanceTaken.currentYear.getBytes();
-            ofile.write(buffer, 0, buffer.length);
+            FileOutputStream ofile = new FileOutputStream(".\\file\\amount.txt");
+            ofile.write(Integer.toString(amount).getBytes());
 
             ofile.close();
         } catch (Exception e) {
@@ -260,71 +227,81 @@ class AllowanceDate {
         }
     }
     void allowanceDateStatus() {
-        //this method helps to know the status of the user in receiving his/her allowance
-        //if received then says "already received" if not then asks user if they want to receive it
-        CurrentDate today = new CurrentDate();
-        CurrentBalance allowance = new CurrentBalance();
+        CurrentBalance depo = new CurrentBalance();
 
-        int currentMonth = Integer.parseInt(today.currentMonth);
-        //int currentDay = Integer.parseInt(today.currentDay); no use as of now, hence commented out!
-        int currentYear = Integer.parseInt(today.currentYear);
-
-        if (currentYear == year) {
-            if(currentMonth == month) {
-                System.out.println("Message: Allowance already taken this month on " + day + "/" + month + "/" + year + " !");
-            } else if(currentMonth > month) {
-                //counts the number of times the allowance must be received. (counts per month)
-                // if the month has passed without taking out the allowance next time the program is run it will add the missed monthly allowances
-                round = currentMonth - month;
-                System.out.println("Message: Allowance date has ARRIVED!");
-                //depositing allowance through this method
-                if(round >= 2) {
-                    System.out.println("Total rounds of allowance available: " + round);
-                }
-                System.out.println("receive your allowances!");
-                for (int i = 0; i < round; i++) {
-                    System.out.println("deposit for month " + (currentMonth - (i + month) - 1) + "(y/n)?");
-                    String choice = input.nextLine();
-
-                    if(choice.equals("y")) {
-                        try {
-                            Scanner ifile = new Scanner(new File(".//file//allowance.txt"));
-                            String StrAllowance = ifile.nextLine();
-                            allowance.appendDepositHistory(today.currentDate, StrAllowance, "Monthly allowance!");
-                            updateAllowanceDate();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+        if((Integer.parseInt(today.currentYear)) >= year) {
+            if((Integer.parseInt(today.currentYear)) == year) {
+                if((Integer.parseInt(today.currentMonth)) >= month) {
+                    if((Integer.parseInt(today.currentMonth)) == month) {
+                        System.out.println("Message: allowance has already been received on " + day + "/"+ month + "/"+ year + "!");
+                    } else if ((Integer.parseInt(today.currentMonth)) > month) {
+                        round = (Integer.parseInt(today.currentMonth)) - month;
+                        for (int i = 0; i < round ; i++) {
+                            System.out.println("Message: " + (round - i) + " Month worth allowance left to be received.");
+                            System.out.println("Would you like to receive it(y/n)? ");
+                            String ch = input.nextLine();
+                            if(ch.equals("Y") || ch.equals("y")) {
+                                String date = today.currentDay + "/" + (month + 1) + "/" + today.currentYear;
+                                depo.appendDepositHistory(today.currentDate, Integer.toString(amount),"Allowance of " + date);
+                                updateAllowanceDate(today.currentDay, Integer.toString(month+1), today.currentYear);
+                                readLatestAllowanceDate();
+                            } else if (ch.equals("N") || ch.equals("n")) {
+                                break;
+                            }
                         }
                     }
+                } else {
+                    System.out.println("Message: Invalid current date or allowance date!");
                 }
-            } else if(currentMonth < month) {
-                System.out.println("Message: Either Invalid latest allowance date or wrong current date readings!");
-            }
-        } else if (currentYear > year) {
-            if(currentMonth < month) {
-                int last = 12 - month;
-                round = last + currentMonth;
-
-                for (int i = 0; i < round; i++) {
-                    System.out.println("deposit for month " + i + "(y/n)?");
-                    String choice = input.nextLine();
-                    input.nextLine();
-                    if(choice.equals("y")) {
-                        try {
-                            Scanner ifile = new Scanner(new File(".//file//allowance.txt"));
-                            String StrAllowance = ifile.nextLine();
-                            allowance.appendDepositHistory(today.currentDate, StrAllowance, "Monthly allowance!");
-                            updateAllowanceDate();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+            } else if ((Integer.parseInt(today.currentYear)) > year) {
+                round = (12 - month) + Integer.parseInt(today.currentMonth);
+                for (int i = 0; i < round ; i++) {
+                    System.out.println("Message: " + (round - i) + " Month worth allowance left to be received.");
+                    System.out.println("Would you like to receive it(y/n)? ");
+                    String ch = input.nextLine();
+                    if(ch.equals("Y") || ch.equals("y")) {
+                        int newmonth;
+                        int newyear;
+                        if(month > 12) {
+                            newmonth = month - 12;
+                            newyear = year + 1;
+                            year = newyear;
+                            month = newmonth;
                         }
+                        String date = today.currentDay + "/" + month + "/" + year;
+                        depo.appendDepositHistory(today.currentDate,Integer.toString(amount),"Allowance of " + date);
+                        updateAllowanceDate(today.currentDay,Integer.toString(month+1), Integer.toString(year));
+                        readLatestAllowanceDate();
+                    } else if (ch.equals("N") || ch.equals("n")) {
+                        break;
                     }
                 }
             }
         } else {
-            System.out.println("Message: Either Invalid latest allowance date or wrong current date readings!");
+            System.out.println("Message: Invalid current date or allowance date!");
         }
+    }
+    private void updateAllowanceDate(String newday, String newmonth, String newyear) {
+        try {
+            FileOutputStream ofile = new FileOutputStream(".\\file\\date.txt");
 
+            byte[] buffer = newday.getBytes();
+            ofile.write(buffer,0, buffer.length);
+
+            ofile.write("\n".getBytes());
+
+            buffer = newmonth.getBytes();
+            ofile.write(buffer,0, buffer.length);
+
+            ofile.write("\n".getBytes());
+
+            buffer = newyear.getBytes();
+            ofile.write(buffer,0, buffer.length);
+
+            ofile.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 class CurrentBalance {
@@ -536,7 +513,8 @@ public class Main {
                 othersmenu();
                 break;
             case 3:
-                new AllowanceDate();
+                AllowanceDate allowance = new AllowanceDate();
+                allowance.allowanceDateStatus();
                 try {
                     Thread.sleep(2000);
                 } catch (Exception e) {
@@ -608,8 +586,9 @@ public class Main {
                 break;
         }
     }
+
     public static void main(String[] argvs) {
-        Account account = new Account();
+        new Account();
         mainmenu();
     }
 }
